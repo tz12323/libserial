@@ -501,6 +501,7 @@ namespace LibSerial
      *     The value returned by the function after it completes without
      *     interruption that sets errno to EINTR.
      */
+# if __cplusplus >= 201103L && __cplusplus < 201703L
     template<typename Fn, typename... Args>
     typename std::result_of<Fn(Args...)>::type
     call_with_retry(Fn func, Args... args)
@@ -512,4 +513,17 @@ namespace LibSerial
         } while((result == -1) and (errno == EINTR)) ;
         return result ;
     }
+#elif __cplusplus >= 201703L
+    template<typename Fn, typename... Args>
+    std::invoke_result_t<Fn, Args...>
+    call_with_retry(Fn func, Args... args)
+    {
+        using result_type = std::invoke_result_t<Fn, Args...> ;
+        result_type result ;
+        do {
+            result = func(std::forward<Args>(args)...);
+        } while((result == -1) and (errno == EINTR)) ;
+        return result ;
+    }
+# endif // __cplusplus >= 201103L
 } // namespace LibSerial
