@@ -1,0 +1,12 @@
+[package]
+name = "libserial"
+repo = "https://github.com/tz12323/libserial"
+version = "1.0.0"
+license = "BSD-3-Clause"
+
+[targets.serial]
+kind = "lib"
+
+[build]
+sources = ["src/*.cpp"]
+include_dirs = ["src"]
